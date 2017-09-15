@@ -1,6 +1,7 @@
 package com.codepath.tiago.flickster.adapters;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -51,7 +52,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
             viewHolder.title = (TextView) convertView.findViewById(R.id.tvTitle);
             viewHolder.overview = (TextView) convertView.findViewById(R.id.tvOverview);
             viewHolder.image = (ImageView) convertView.findViewById(R.id.ivMovieImage);
-            
+
             // Cache the viewHolder object inside the fresh view.
             convertView.setTag(viewHolder);
         } else {
@@ -63,39 +64,20 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         // Populate the data from the data object via the viewHolder object into the template view.
         viewHolder.title.setText(movie.getOriginalTitle());
         viewHolder.overview.setText(movie.getOverview());
+
+        // Check the orientation of the device and choose the correct image path for it.
+        int orientation = getContext().getResources().getConfiguration().orientation;
+        String image_path = "";
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            image_path = movie.getPosterPath();
+        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            image_path = movie.getBackdropPath();
+        }
+
+        // Load the image.
         viewHolder.image.setImageResource(0);
-        Picasso.with(getContext()).load(movie.getPosterPath()).into(viewHolder.image);
+        Picasso.with(getContext()).load(image_path).into(viewHolder.image);
 
         return convertView;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

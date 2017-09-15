@@ -2,7 +2,6 @@ package com.codepath.tiago.flickster;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ListView;
 
 import com.codepath.tiago.flickster.adapters.MovieArrayAdapter;
@@ -48,7 +47,6 @@ public class MovieActivity extends AppCompatActivity {
                     movies.addAll(Movie.fromJsonArray(movieJsonResults));
                     movieAdapter.notifyDataSetChanged();
 
-                    Log.d("DEBUG", movies.toString());
                 } catch(JSONException e) {
                     e.printStackTrace();
                 }
