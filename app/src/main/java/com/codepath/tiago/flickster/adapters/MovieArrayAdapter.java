@@ -35,10 +35,38 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         super(context, android.R.layout.simple_list_item_1, movies);
     }
 
+    // Returns the number of types of Views that will be created by getView(int, View, ViewGroup)
+    @Override
+    public int getViewTypeCount() {
+        return Movie.DisplayValues.values().length;
+    }
+
+    // Get the type of View that will be created by getView(int, View, ViewGroup) for the
+    // specified item.
+    @Override
+    public int getItemViewType(int position) {
+        return getItem(position).getDisplayValue().ordinal();
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        // Get the data item for this position.
+        Movie movie = getItem(position);
 
+        // Get the data item type for this position
+        int type = getItemViewType(position);
+
+        if (convertView == null) {
+            // Inflate XML layout based on the type.
+            convertView = getInflatedLayoutForType(type);
+        }
+
+        populateViewForType(type, convertView, movie);
+
+        return convertView;
+
+/*
         // Get the movie for this position.
         Movie movie = getItem(position);
 
@@ -70,20 +98,76 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         int orientation = getContext().getResources().getConfiguration().orientation;
         String imagePath = "";
         int imageWidth = 0;
+        int imagePlaceholder = 0;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             imagePath = movie.getPosterPath();
             imageWidth = (int) (0.4*DeviceDimensionsHelper.getDisplayWidth(getContext()));
+            imagePlaceholder = R.drawable.movie_placeholder_portrait;
 
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             imagePath = movie.getBackdropPath();
             imageWidth = (int) (0.6*DeviceDimensionsHelper.getDisplayWidth(getContext()));
+            imagePlaceholder = R.drawable.movie_placeholder_landscape;
         }
 
         // Load the image.
         viewHolder.image.setImageResource(0);
-        Picasso.with(getContext()).load(imagePath).resize(imageWidth, 0).into(viewHolder.image);
+        Picasso.with(getContext()).load(imagePath).resize(imageWidth, 0).placeholder(imagePlaceholder).into(viewHolder.image);
 
 
         return convertView;
+ */
+    }
+
+    // Given the item type, responsible for returning the correct inflated XML layout file.
+    private View getInflatedLayoutForType(int type) {
+        if (type == Movie.DisplayValues.POPULAR.ordinal()) {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, null);
+        } else if (type == Movie.DisplayValues.REGULAR.ordinal()) {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie, null);
+        } else {
+            return null;
+        }
+    }
+
+    private void populateViewForType(int type, View convertView, Movie movie) {
+        if (type == Movie.DisplayValues.POPULAR.ordinal()) {
+
+            ImageView ivBackdrop = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+            ivBackdrop.setImageResource(0);
+            int imageWidth = DeviceDimensionsHelper.getDisplayWidth(getContext());
+
+            Picasso.with(getContext()).load(movie.getBackdropPath()).resize(imageWidth, 0).placeholder(R.drawable.movie_placeholder_landscape).into(ivBackdrop);
+        } else if (type == Movie.DisplayValues.REGULAR.ordinal()) {
+
+            ImageView ivMovieImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+
+            // Check the orientation of the device and choose the correct image path for it.
+            int orientation = getContext().getResources().getConfiguration().orientation;
+            String imagePath = "";
+            int imageWidth = 0;
+            int imagePlaceholder = 0;
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                imagePath = movie.getPosterPath();
+                imageWidth = (int) (0.4*DeviceDimensionsHelper.getDisplayWidth(getContext()));
+                imagePlaceholder = R.drawable.movie_placeholder_portrait;
+
+            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                imagePath = movie.getBackdropPath();
+                imageWidth = (int) (0.6*DeviceDimensionsHelper.getDisplayWidth(getContext()));
+                imagePlaceholder = R.drawable.movie_placeholder_landscape;
+            }
+
+            // Load the image.
+            ivMovieImage.setImageResource(0);
+            Picasso.with(getContext()).load(imagePath).resize(imageWidth, 0).placeholder(imagePlaceholder).into(ivMovieImage);
+
+            // Set the title and overview.
+            TextView tvMovieTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            TextView tvMovieOverview = (TextView) convertView.findViewById(R.id.tvOverview);
+
+            tvMovieTitle.setText(movie.getOriginalTitle());
+            tvMovieOverview.setText(movie.getOverview());
+        }
     }
 }
