@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.tiago.flickster.R;
+import com.codepath.tiago.flickster.helpers.DeviceDimensionsHelper;
 import com.codepath.tiago.flickster.models.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -67,16 +68,21 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
         // Check the orientation of the device and choose the correct image path for it.
         int orientation = getContext().getResources().getConfiguration().orientation;
-        String image_path = "";
+        String imagePath = "";
+        int imageWidth = 0;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            image_path = movie.getPosterPath();
+            imagePath = movie.getPosterPath();
+            imageWidth = (int) (0.4*DeviceDimensionsHelper.getDisplayWidth(getContext()));
+
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            image_path = movie.getBackdropPath();
+            imagePath = movie.getBackdropPath();
+            imageWidth = (int) (0.6*DeviceDimensionsHelper.getDisplayWidth(getContext()));
         }
 
         // Load the image.
         viewHolder.image.setImageResource(0);
-        Picasso.with(getContext()).load(image_path).into(viewHolder.image);
+        Picasso.with(getContext()).load(imagePath).resize(imageWidth, 0).into(viewHolder.image);
+
 
         return convertView;
     }

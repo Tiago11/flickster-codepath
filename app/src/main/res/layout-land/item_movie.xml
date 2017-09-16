@@ -11,6 +11,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:scaleType="center"
+        android:adjustViewBounds="true"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <TextView
@@ -21,7 +23,8 @@
         android:layout_toEndOf="@+id/ivMovieImage"
         android:layout_toRightOf="@+id/ivMovieImage"
         android:text="The Dark Tower"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
     <TextView
         android:id="@+id/tvOverview"
