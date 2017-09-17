@@ -25,9 +25,13 @@ import java.util.List;
 public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
     // View lookup cache
-    private static class ViewHolder {
+    private static class ViewHolderRegularMovie {
         TextView title;
         TextView overview;
+        ImageView image;
+    }
+
+    private static class ViewHolderPopularMovie {
         ImageView image;
     }
 
@@ -54,46 +58,75 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         // Get the data item for this position.
         Movie movie = getItem(position);
 
-        // Get the data item type for this position
+        // Get the item type for this position
         int type = getItemViewType(position);
 
-        if (convertView == null) {
-            // Inflate XML layout based on the type.
-            convertView = getInflatedLayoutForType(type);
-        }
+        if (type == Movie.DisplayValues.POPULAR.ordinal()) {
 
-        populateViewForType(type, convertView, movie);
+            ViewHolderPopularMovie holderPopularMovie;
+            if (convertView == null) {
+
+                holderPopularMovie = new ViewHolderPopularMovie();
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, null);
+
+                holderPopularMovie.image = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+                holderPopularMovie.image.setImageResource(0);
+
+                convertView.setTag(holderPopularMovie);
+
+            } else {
+                holderPopularMovie = (ViewHolderPopularMovie) convertView.getTag();
+            }
+
+            // Populate
+            populateHolderPopularMovie(holderPopularMovie, movie);
+
+        } else if (type == Movie.DisplayValues.REGULAR.ordinal()) {
+
+            ViewHolderRegularMovie holderRegularMovie;
+            if (convertView == null) {
+
+                holderRegularMovie = new ViewHolderRegularMovie();
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, null);
+
+                holderRegularMovie.title = (TextView) convertView.findViewById(R.id.tvTitle);
+                holderRegularMovie.overview = (TextView) convertView.findViewById(R.id.tvOverview);
+                holderRegularMovie.image = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+
+                convertView.setTag(holderRegularMovie);
+
+            } else {
+                holderRegularMovie = (ViewHolderRegularMovie) convertView.getTag();
+            }
+
+            // Populate.
+            populateHolderRegularMovie(holderRegularMovie, movie);
+
+        } else {
+            // Log!
+        }
 
         return convertView;
+    }
 
-/*
-        // Get the movie for this position.
-        Movie movie = getItem(position);
-
-        // Check if an existing view is being reused, otherwise inflate the view.
-        ViewHolder viewHolder;
-        if (convertView == null) {
-
-            // If there's no view to re-use, inflate a brand new view for row.
-            viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.item_movie, parent, false);
-            viewHolder.title = (TextView) convertView.findViewById(R.id.tvTitle);
-            viewHolder.overview = (TextView) convertView.findViewById(R.id.tvOverview);
-            viewHolder.image = (ImageView) convertView.findViewById(R.id.ivMovieImage);
-
-            // Cache the viewHolder object inside the fresh view.
-            convertView.setTag(viewHolder);
+    // Given the item type, responsible for returning the correct inflated XML layout file.
+    private View getInflatedLayoutForType(int type) {
+        if (type == Movie.DisplayValues.POPULAR.ordinal()) {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, null);
+        } else if (type == Movie.DisplayValues.REGULAR.ordinal()) {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie, null);
         } else {
-
-            // View is being recycled, retrieve the viewHolder object from tag.
-            viewHolder = (ViewHolder) convertView.getTag();
+            return null;
         }
+    }
 
-        // Populate the data from the data object via the viewHolder object into the template view.
-        viewHolder.title.setText(movie.getOriginalTitle());
-        viewHolder.overview.setText(movie.getOverview());
+    private void populateHolderPopularMovie(ViewHolderPopularMovie holderPopularMovie, Movie movie) {
+        int imageWidth = DeviceDimensionsHelper.getDisplayWidth(getContext());
+        Picasso.with(getContext()).load(movie.getBackdropPath()).resize(imageWidth, 0).placeholder(R.drawable.movie_placeholder_landscape).into(holderPopularMovie.image);
 
+    }
+
+    private void populateHolderRegularMovie(ViewHolderRegularMovie holderRegularMovie, Movie movie) {
         // Check the orientation of the device and choose the correct image path for it.
         int orientation = getContext().getResources().getConfiguration().orientation;
         String imagePath = "";
@@ -111,63 +144,10 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         }
 
         // Load the image.
-        viewHolder.image.setImageResource(0);
-        Picasso.with(getContext()).load(imagePath).resize(imageWidth, 0).placeholder(imagePlaceholder).into(viewHolder.image);
+        holderRegularMovie.image.setImageResource(0);
+        Picasso.with(getContext()).load(imagePath).resize(imageWidth, 0).placeholder(imagePlaceholder).into(holderRegularMovie.image);
 
-
-        return convertView;
- */
-    }
-
-    // Given the item type, responsible for returning the correct inflated XML layout file.
-    private View getInflatedLayoutForType(int type) {
-        if (type == Movie.DisplayValues.POPULAR.ordinal()) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, null);
-        } else if (type == Movie.DisplayValues.REGULAR.ordinal()) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie, null);
-        } else {
-            return null;
-        }
-    }
-
-    private void populateViewForType(int type, View convertView, Movie movie) {
-        if (type == Movie.DisplayValues.POPULAR.ordinal()) {
-
-            ImageView ivBackdrop = (ImageView) convertView.findViewById(R.id.ivMovieImage);
-            ivBackdrop.setImageResource(0);
-            int imageWidth = DeviceDimensionsHelper.getDisplayWidth(getContext());
-
-            Picasso.with(getContext()).load(movie.getBackdropPath()).resize(imageWidth, 0).placeholder(R.drawable.movie_placeholder_landscape).into(ivBackdrop);
-        } else if (type == Movie.DisplayValues.REGULAR.ordinal()) {
-
-            ImageView ivMovieImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
-
-            // Check the orientation of the device and choose the correct image path for it.
-            int orientation = getContext().getResources().getConfiguration().orientation;
-            String imagePath = "";
-            int imageWidth = 0;
-            int imagePlaceholder = 0;
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                imagePath = movie.getPosterPath();
-                imageWidth = (int) (0.4*DeviceDimensionsHelper.getDisplayWidth(getContext()));
-                imagePlaceholder = R.drawable.movie_placeholder_portrait;
-
-            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                imagePath = movie.getBackdropPath();
-                imageWidth = (int) (0.6*DeviceDimensionsHelper.getDisplayWidth(getContext()));
-                imagePlaceholder = R.drawable.movie_placeholder_landscape;
-            }
-
-            // Load the image.
-            ivMovieImage.setImageResource(0);
-            Picasso.with(getContext()).load(imagePath).resize(imageWidth, 0).placeholder(imagePlaceholder).into(ivMovieImage);
-
-            // Set the title and overview.
-            TextView tvMovieTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-            TextView tvMovieOverview = (TextView) convertView.findViewById(R.id.tvOverview);
-
-            tvMovieTitle.setText(movie.getOriginalTitle());
-            tvMovieOverview.setText(movie.getOverview());
-        }
+        holderRegularMovie.title.setText(movie.getOriginalTitle());
+        holderRegularMovie.overview.setText(movie.getOverview());
     }
 }
