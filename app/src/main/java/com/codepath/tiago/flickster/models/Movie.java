@@ -3,26 +3,31 @@ package com.codepath.tiago.flickster.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by tiago on 9/15/17.
  */
 
+@Parcel
 public class Movie {
 
-    public enum DisplayValues {
+    public enum DisplayValues implements Serializable {
         POPULAR,
         REGULAR;
     }
 
-    String posterPath;
-    String backdropPath;
-    String originalTitle;
-    String overview;
-    double voteAverage;
-    DisplayValues displayValue;
+    public String posterPath;
+    public String backdropPath;
+    public String originalTitle;
+    public String overview;
+    public double voteAverage;
+    public String releaseDate;
+
+    public DisplayValues displayValue;
 
     public String getPosterPath() {
         return String.format("https://image.tmdb.org/t/p/w342/%s", this.posterPath);
@@ -44,8 +49,16 @@ public class Movie {
         return this.voteAverage;
     }
 
+    public String getReleaseDate() {
+        return String.format("Release date: %s", this.releaseDate);
+    }
+
     public DisplayValues getDisplayValue() {
         return this.displayValue;
+    }
+
+    public Movie() {
+
     }
 
     public Movie(JSONObject jsonObject) throws JSONException {
@@ -53,6 +66,7 @@ public class Movie {
         this.backdropPath = jsonObject.getString("backdrop_path");
         this.originalTitle = jsonObject.getString("original_title");
         this.overview = jsonObject.getString("overview");
+        this.releaseDate = jsonObject.getString("release_date");
         this.voteAverage = jsonObject.getDouble("vote_average");
 
         if (this.voteAverage >= 7.0) {

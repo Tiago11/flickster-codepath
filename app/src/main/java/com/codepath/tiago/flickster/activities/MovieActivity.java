@@ -1,9 +1,13 @@
-package com.codepath.tiago.flickster;
+package com.codepath.tiago.flickster.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.codepath.tiago.flickster.R;
 import com.codepath.tiago.flickster.adapters.MovieArrayAdapter;
 import com.codepath.tiago.flickster.models.Movie;
 import com.loopj.android.http.AsyncHttpClient;
@@ -12,6 +16,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -47,6 +52,9 @@ public class MovieActivity extends AppCompatActivity {
                     movies.addAll(Movie.fromJsonArray(movieJsonResults));
                     movieAdapter.notifyDataSetChanged();
 
+                    // Attach event listeners to the ListView.
+                    setupListViewListener();
+
                 } catch(JSONException e) {
                     e.printStackTrace();
                 }
@@ -59,5 +67,25 @@ public class MovieActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+    }
+
+    private void setupListViewListener() {
+        // Event listener on click lauches detailActivity for that element.
+        lvItems.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapter,
+                                                View item, int pos, long id) {
+
+                        Movie movie = movies.get(pos);
+
+                        Intent i = new Intent(MovieActivity.this, DetailActivity.class);
+                        i.putExtra("movie", Parcels.wrap(movie));
+
+                        startActivity(i);
+
+                    }
+                }
+        );
     }
 }
