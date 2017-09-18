@@ -20,14 +20,21 @@ public class Movie {
         REGULAR;
     }
 
+    public int id;
     public String posterPath;
     public String backdropPath;
     public String originalTitle;
     public String overview;
     public double voteAverage;
     public String releaseDate;
+    public String trailerKey;
 
     public DisplayValues displayValue;
+
+    // Getters.
+    public int getId() {
+        return this.id;
+    }
 
     public String getPosterPath() {
         return String.format("https://image.tmdb.org/t/p/w342/%s", this.posterPath);
@@ -53,15 +60,26 @@ public class Movie {
         return String.format("Release date: %s", this.releaseDate);
     }
 
+    public String getTrailerKey() {
+        return this.trailerKey;
+    }
+
     public DisplayValues getDisplayValue() {
         return this.displayValue;
     }
 
+    // Setters.
+    public void setTrailerKey(String trailerKey) {
+        this.trailerKey = trailerKey;
+    }
+
+    // Constructor.
     public Movie() {
 
     }
 
     public Movie(JSONObject jsonObject) throws JSONException {
+        this.id = jsonObject.getInt("id");
         this.posterPath = jsonObject.getString("poster_path");
         this.backdropPath = jsonObject.getString("backdrop_path");
         this.originalTitle = jsonObject.getString("original_title");
@@ -74,6 +92,14 @@ public class Movie {
         } else {
             this.displayValue = DisplayValues.REGULAR;
         }
+    }
+
+    public boolean isPopular() {
+        return (this.displayValue == DisplayValues.POPULAR);
+    }
+
+    public boolean isRegular() {
+        return (this.displayValue == DisplayValues.REGULAR);
     }
 
     public static ArrayList<Movie> fromJsonArray(JSONArray array) {

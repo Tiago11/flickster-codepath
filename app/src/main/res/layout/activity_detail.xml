@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <RatingBar
@@ -34,6 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_horizontal"
         android:numStars="5"
         android:stepSize="0.5" />
 
@@ -42,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
         android:text="TextView" />
 
 </LinearLayout>

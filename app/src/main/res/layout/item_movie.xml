@@ -21,6 +21,7 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/ivMovieImage"
         android:layout_toRightOf="@+id/ivMovieImage"
+        android:layout_marginLeft="10dp"
         android:gravity="center"
         android:text="The Dark Tower"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
@@ -32,5 +33,6 @@
         android:layout_below="@+id/tvTitle"
         android:layout_toEndOf="@+id/ivMovieImage"
         android:layout_toRightOf="@+id/ivMovieImage"
+        android:layout_marginLeft="10dp"
         android:text="The last Gunslinger, Roland Deschain, has been locked in an eternal battle with Walter O’Dim, also known as the Man in Black, determined to prevent him from toppling the Dark Tower, which holds the universe together. With the fate of the worlds at stake, good and evil will collide in the ultimate battle as only Roland can defend the Tower from the Man in Black." />
 </RelativeLayout>

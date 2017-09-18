@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.tiago.flickster.R;
 import com.codepath.tiago.flickster.helpers.DeviceDimensionsHelper;
+import com.codepath.tiago.flickster.helpers.YoutubeVideoHandlerHelper;
 import com.codepath.tiago.flickster.models.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -24,6 +26,8 @@ import java.util.List;
 
 public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
+    public YoutubeVideoHandlerHelper ytVideoHandler;
+
     // View lookup cache
     private static class ViewHolderRegularMovie {
         TextView title;
@@ -33,6 +37,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
     private static class ViewHolderPopularMovie {
         ImageView image;
+        ImageButton playButton;
     }
 
     public MovieArrayAdapter(Context context, List<Movie> movies) {
@@ -71,6 +76,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
                 holderPopularMovie.image = (ImageView) convertView.findViewById(R.id.ivMovieImage);
                 holderPopularMovie.image.setImageResource(0);
+                holderPopularMovie.playButton = (ImageButton) convertView.findViewById(R.id.ibPlayTrailer);
 
                 convertView.setTag(holderPopularMovie);
 
@@ -80,6 +86,9 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
             // Populate
             populateHolderPopularMovie(holderPopularMovie, movie);
+
+            // Attach event to play button.
+            setupPlayButtonListener(holderPopularMovie, movie);
 
         } else if (type == Movie.DisplayValues.REGULAR.ordinal()) {
 
@@ -149,5 +158,19 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
         holderRegularMovie.title.setText(movie.getOriginalTitle());
         holderRegularMovie.overview.setText(movie.getOverview());
+    }
+
+    private void setupPlayButtonListener(ViewHolderPopularMovie holderPopularMovie, Movie movie) {
+
+        final Movie m = movie;
+
+        holderPopularMovie.playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ytVideoHandler != null) {
+                    ytVideoHandler.initYoutubePlayerFragment(m.getTrailerKey());
+                }
+            }
+        });
     }
 }
