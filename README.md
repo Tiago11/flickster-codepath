@@ -22,7 +22,7 @@ The following **bonus** features are implemented:
 
 * [X] Allow user to view details of the movie including ratings and popularity within a separate activity or dialog fragment.
 * [X] When viewing a popular movie (i.e. a movie voted for more than 5 stars) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
-* [ ] Allow video trailers to be played in full-screen using the YouTubePlayerView.
+* [*] Allow video trailers to be played in full-screen using the YouTubePlayerView.
     * [X] Overlay a play icon for videos that can be played.
     * [ ] More popular movies should start a separate activity that plays the video immediately.
     * [ ] Less popular videos rely on the detail page should show ratings and a YouTube preview.
@@ -38,18 +38,20 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![](http://i.imgur.com/Hwfn13k.gif)
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
+[Link to video on Imgur](https://imgur.com/Hwfn13k)
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+The main challenge was the integration with YouTube for the trailers.
+I couldn't find much information online, I was able to only parcially complete that requirement.
 
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Parcel] - To send complex objects through activities.
 
 ## License
 
